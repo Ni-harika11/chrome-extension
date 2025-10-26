@@ -1,6 +1,4 @@
 "use client";
-
-
 import useClipboard from 'react-use-clipboard'; 
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 import React from 'react';
