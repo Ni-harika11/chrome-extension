@@ -1,6 +1,6 @@
   "use client"; 
   import React from "react"; 
-  import { applyFilter, getAIAnswer } from "../../services/voice.services";
+  import { applyFilter, getAIAnswer, optimizeText } from "../../services/voice.services";
   import SpeechRecognition, { useSpeechRecognition } from "react-speech-recognition";
 
   const VoiceRecorder: React.FC = () => {
@@ -52,9 +52,14 @@
 
     const handleAnswer = async () => {
       try { 
-        const answer = await getAIAnswer(text)
+         const optimizetext= await optimizeText(text,1000)
+         console.log(optimizetext,"optimize data");
+         
+        const answer = await getAIAnswer(optimizetext)
+        console.log(answer,"after the opimixations");
+        
         setAiAnswer(answer);
-        speakAnswer(answer); // 🎤 Speak the answer aloud
+        speakAnswer(answer); 
       } catch (error) {
         console.error("Error getting AI answer:", error);
       }
@@ -69,6 +74,14 @@
       speechSynthesis.speak(utterance);
     };
 
+    const handleReset =()=>{
+      setAiAnswer("")
+      setFilter("")
+      setFilteredText("")
+      setText('')
+    
+    }
+
     if (!browserSupportsSpeechRecognition) {
       return <span>Browser doesn’t support speech recognition 😢</span>;
     }
@@ -76,15 +89,22 @@
     return (
       <div className="container flex flex-col items-center justify-center min-h-screen bg-gray-100 text-gray-800">
         <h2 className="text-2xl font-bold mb-4">🎙️ Voice Assistant</h2>
+          <div className="main-content relative bg-white p-4 rounded-lg shadow-md w-3/4 h-48 overflow-y-auto mb-6">
+            <strong>🗣 You said:</strong> {text || "Speak something..."}
 
-        <div className="main-content bg-white p-4 rounded-lg shadow-md w-3/4 h-48 overflow-y-auto mb-6">
-          <strong>🗣 You said:</strong> {text || "Speak something..."}
-          {aiAnswer && (
-            <div className="mt-4 text-green-700">
-              <strong>🤖 AI Answer:</strong> {aiAnswer}
-            </div>
-          )}
-        </div>
+            {aiAnswer && (
+              <div className="mt-4 text-green-700">
+                <strong>🤖 AI Answer:</strong> {aiAnswer}
+              </div>
+            )}
+
+            <button
+              onClick={handleReset}
+              className="absolute bottom-2 right-2 bg-gray-500 hover:bg-gray-600 text-white text-sm px-3 py-1 rounded-lg shadow transition"
+            >
+              🔄
+            </button>
+          </div>
 
         <div className="flex items-center space-x-3 mb-4">
           <select
