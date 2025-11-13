@@ -52,11 +52,8 @@
 
     const handleAnswer = async () => {
       try { 
-         const optimizetext= await optimizeText(text,1000)
-         console.log(optimizetext,"optimize data");
-         
+        const optimizetext= await optimizeText(text,1000)
         const answer = await getAIAnswer(optimizetext)
-        console.log(answer,"after the opimixations");
         
         setAiAnswer(answer);
         speakAnswer(answer); 
